@@ -93,7 +93,7 @@ if __name__ == "__main__":
         "dt = h^2": lambda h: h**2,
     }
     os.makedirs(OUT, exist_ok=True)
-    plt.figure(figsize=(6, 4.5))
+    plt.figure(figsize=(8, 5.5))
     h_arr = 2 / np.array(N_LIST)
     for label, fn in cases.items():
         e = convergence(label, fn)
