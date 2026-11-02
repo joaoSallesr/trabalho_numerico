@@ -1,109 +1,83 @@
 import numpy as np
-from scipy.linalg import solve_banded
-
-from .exact_solutions import omega_exact
 
 
-def coefficients_x(u, h, Re):
+def coefficients_x(u, h, nu):
     u_int = u[1:-1, 1:-1]
-
-    a_W = 1 / (Re * h**2) + u_int / (2 * h)
-    a_P = np.full_like(u_int, -2 / (Re * h**2))
-    a_E = 1 / (Re * h**2) - u_int / (2 * h)
-
+    a_W = nu / h**2 + u_int / (2 * h)
+    a_P = np.full_like(u_int, -2 * nu / h**2)
+    a_E = nu / h**2 - u_int / (2 * h)
     return a_W, a_P, a_E
 
 
-def coefficients_y(v, h, Re):
+def coefficients_y(v, h, nu):
     v_int = v[1:-1, 1:-1]
-
-    b_S = 1 / (Re * h**2) + v_int / (2 * h)
-    b_P = np.full_like(v_int, -2 / (Re * h**2))
-    b_N = 1 / (Re * h**2) - v_int / (2 * h)
-
+    b_S = nu / h**2 + v_int / (2 * h)
+    b_P = np.full_like(v_int, -2 * nu / h**2)
+    b_N = nu / h**2 - v_int / (2 * h)
     return b_S, b_P, b_N
 
 
-def apply_bc(omega, X, Y, t, Re):
+def thomas(lower, main, upper, rhs):
+    n = main.shape[-1]
+    cp = np.zeros_like(main)
+    dp = np.zeros_like(rhs)
 
-    omega[0, :] = omega_exact(X[0, :], Y[0, :], t, Re)
-    omega[-1, :] = omega_exact(X[-1, :], Y[-1, :], t, Re)
-    omega[:, 0] = omega_exact(X[:, 0], Y[:, 0], t, Re)
-    omega[:, -1] = omega_exact(X[:, -1], Y[:, -1], t, Re)
+    # varredura para frente
+    if n > 1:
+        cp[:, 0] = upper[:, 0] / main[:, 0]
+    dp[:, 0] = rhs[:, 0] / main[:, 0]
+    for k in range(1, n):
+        denom = main[:, k] - lower[:, k - 1] * cp[:, k - 1]
+        if k < n - 1:
+            cp[:, k] = upper[:, k] / denom
+        dp[:, k] = (rhs[:, k] - lower[:, k - 1] * dp[:, k - 1]) / denom
 
-    return omega
+    # substituição de volta
+    x = np.zeros_like(rhs)
+    x[:, -1] = dp[:, -1]
+    for k in range(n - 2, -1, -1):
+        x[:, k] = dp[:, k] - cp[:, k] * x[:, k + 1]
+    return x
 
 
-# Algoritmo de Thomas
-def tdma(lower, main, upper, rhs):
-    n = len(main)
-    ab = np.zeros((3, n))
-    ab[0, 1:] = upper  # linha 0: super-diagonal
-    ab[1, :] = main  # linha 1: diagonal principal
-    ab[2, :-1] = lower  # linha 2: sub-diagonal
-    return solve_banded((1, 1), ab, rhs)
+def adi_step(omega, u, v, dt, h, nu, bc_old, bc_new, f=None):
+    c = dt / 2.0
+    a_W, a_P, a_E = coefficients_x(u, h, nu)
+    b_S, b_P, b_N = coefficients_y(v, h, nu)
+    f_int = 0.0 if f is None else f[1:-1, 1:-1]
 
-
-# Passo ADI de Peaceman-Rachford
-def adi_step(omega, u, v, dt, h, Re, t, X, Y):
-    N = omega.shape[0] - 1  # número de subintervalos (N+1 nós por direção)
-    Ni = N - 1  # número de nós interiores por direção
-    c = dt / 2.0  # comprimento do meio-passo
-
-    # Coeficientes dos operadores Lx e Ly
-    a_W, a_P, a_E = coefficients_x(u, h, Re)
-    b_S, b_P, b_N = coefficients_y(v, h, Re)
-
-    # ===================================== STEP 1 =====================================
+    # ===== PASSO 1: implícito em x, explícito em y =====
     omega_half = omega.copy()
-    apply_bc(omega_half, X, Y, t + c, Re)
 
-    Ly = (
-        b_S * omega[:-2, 1:-1]  # vizinho sul    ω[i-1, j]
-        + b_P * omega[1:-1, 1:-1]  # centro      ω[i,   j]
-        + b_N * omega[2:, 1:-1]  # vizinho norte ω[i+1, j]
-    )
+    dg = bc_new - bc_old
+    for col in (0, -1):
+        vb = v[1:-1, col]
+        Ly_dg = (
+            (nu / h**2 + vb / (2 * h)) * dg[:-2, col]
+            - (2 * nu / h**2) * dg[1:-1, col]
+            + (nu / h**2 - vb / (2 * h)) * dg[2:, col]
+        )
+        omega_half[1:-1, col] = 0.5 * (bc_old[1:-1, col] + bc_new[1:-1, col]) - 0.5 * c * Ly_dg
 
-    rhs_half = omega[1:-1, 1:-1] + c * Ly
+    Ly = b_S * omega[:-2, 1:-1] + b_P * omega[1:-1, 1:-1] + b_N * omega[2:, 1:-1]
+    rhs = omega[1:-1, 1:-1] + c * Ly + c * f_int
+    rhs[:, 0] += c * a_W[:, 0] * omega_half[1:-1, 0]
+    rhs[:, -1] += c * a_E[:, -1] * omega_half[1:-1, -1]
 
-    for i in range(Ni):
-        rhs = rhs_half[i].copy()
+    omega_half[1:-1, 1:-1] = thomas(-c * a_W[:, 1:], 1 - c * a_P, -c * a_E[:, :-1], rhs)
 
-        # Incorpora Condição de Contorno
-        rhs[0] += c * a_W[i, 0] * omega_half[i + 1, 0]
-        rhs[-1] += c * a_E[i, -1] * omega_half[i + 1, -1]
-
-        # Diagonais de (I - c*Lx)
-        lower = -c * a_W[i, 1:]  # sub-diagonal   (tamanho Ni-1)
-        main = 1 - c * a_P[i, :]  # diagonal ppal  (tamanho Ni)
-        upper = -c * a_E[i, :-1]  # super-diagonal (tamanho Ni-1)
-
-        omega_half[i + 1, 1:-1] = tdma(lower, main, upper, rhs)
-
-    # ===================================== STEP 2 =====================================
+    # ===== PASSO 2: implícito em y, explícito em x =====
     omega_new = omega_half.copy()
-    apply_bc(omega_new, X, Y, t + dt, Re)
+    omega_new[0, :] = bc_new[0, :]
+    omega_new[-1, :] = bc_new[-1, :]
+    omega_new[:, 0] = bc_new[:, 0]
+    omega_new[:, -1] = bc_new[:, -1]
 
-    Lx = (
-        a_W * omega_half[1:-1, :-2]  # vizinho oeste   ω*[i, j-1]
-        + a_P * omega_half[1:-1, 1:-1]  # centro       ω*[i,   j]
-        + a_E * omega_half[1:-1, 2:]  # vizinho leste  ω*[i, j+1]
-    )
+    Lx = a_W * omega_half[1:-1, :-2] + a_P * omega_half[1:-1, 1:-1] + a_E * omega_half[1:-1, 2:]
+    rhs = omega_half[1:-1, 1:-1] + c * Lx + c * f_int
+    rhs[0, :] += c * b_S[0, :] * omega_new[0, 1:-1]
+    rhs[-1, :] += c * b_N[-1, :] * omega_new[-1, 1:-1]
 
-    rhs_new = omega_half[1:-1, 1:-1] + c * Lx
-
-    for j in range(Ni):
-        rhs = rhs_new[:, j].copy()
-
-        # Incorpora Condição de Contorno
-        rhs[0] += c * b_S[0, j] * omega_new[0, j + 1]
-        rhs[-1] += c * b_N[-1, j] * omega_new[-1, j + 1]
-
-        # Diagonais de (I - c*Ly)
-        lower = -c * b_S[1:, j]  # sub-diagonal   (tamanho Ni-1)
-        main = 1 - c * b_P[:, j]  # diagonal ppal  (tamanho Ni)
-        upper = -c * b_N[:-1, j]  # super-diagonal (tamanho Ni-1)
-
-        omega_new[1:-1, j + 1] = tdma(lower, main, upper, rhs)
+    omega_new[1:-1, 1:-1] = thomas(-c * b_S[1:, :].T, 1 - c * b_P.T, -c * b_N[:-1, :].T, rhs.T).T
 
     return omega_new
