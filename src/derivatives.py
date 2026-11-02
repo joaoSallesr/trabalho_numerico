@@ -1,6 +1,3 @@
-import numpy as np
-
-
 def derivative_x(f, h):
     return (f[1:-1, 2:] - f[1:-1, :-2]) / (2 * h)
 
