@@ -4,4 +4,6 @@ Re,malha,h,dt,dt/h^2,iteracoes,t_final,criterio_parada,tolerancia,res_psi,res_om
 1000,32x32,0.03125,9.765625e-05,0.1,19695,1.923340,"max(||R_psi||_inf, ||R_omega||_inf) <= tol (residuos estacionarios, slide 22)",1e-06,9.995e-07,9.902e-08,convergiu,7.8
 1000,64x64,0.015625,1.220703e-04,0.5,7452,0.909668,"max(||R_psi||_inf, ||R_omega||_inf) <= tol (residuos estacionarios, slide 22)",1e-06,9.979e-07,1.511e-07,convergiu,6.0
 1000,128x128,0.0078125,6.103516e-05,1,14295,0.872498,"max(||R_psi||_inf, ||R_omega||_inf) <= tol (residuos estacionarios, slide 22)",1e-06,9.990e-07,2.298e-07,convergiu,49.3
+1000,256x256,0.00390625,1.525879e-05,1,56566,0.863129,"max(||R_psi||_inf, ||R_omega||_inf) <= tol (residuos estacionarios, slide 22)",1e-06,9.997e-07,2.654e-07,convergiu,1026.2
 3200,128x128,0.0078125,1.525879e-05,0.25,62132,0.948059,"max(||R_psi||_inf, ||R_omega||_inf) <= tol (residuos estacionarios, slide 22)",1e-06,9.999e-07,1.620e-07,convergiu,219.8
+5000,256x256,0.00390625,7.629395e-06,0.5,100759,0.768730,"max(||R_psi||_inf, ||R_omega||_inf) <= tol (residuos estacionarios, slide 22)",0.0001,9.999e-05,2.043e-05,convergiu,1601.2

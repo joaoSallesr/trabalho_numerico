@@ -1,0 +1,16 @@
+{
+  "Re": 5000.0,
+  "N": 256,
+  "malha": "256x256",
+  "h": 0.00390625,
+  "dt": 7.62939453125e-06,
+  "dt/h^2": 0.5,
+  "tolerancia": 0.0001,
+  "criterio_parada": "max(||R_psi||_inf, ||R_omega||_inf) <= tol (residuos estacionarios, slide 22)",
+  "iteracoes": 100759,
+  "status": "convergiu",
+  "res_psi": 9.998717265968793e-05,
+  "res_omega": 2.0429800649424124e-05,
+  "t_final": 0.7687301635742188,
+  "tempo_cpu_s": 1601.2276261069992
+}

@@ -629,6 +629,21 @@ def primary_vortex(res):
     return {"psi": float(res.psi[j, i]), "omega": float(res.omega[j, i]), "x": float(res.x[i]), "y": float(res.y[j])}
 
 
+def secondary_vortices(res):
+    """Vórtices secundários dos cantos inferiores: maior ψ > 0 em cada quadrante inferior (nós da malha)."""
+    X, Y = np.meshgrid(res.x, res.y)
+    out = {}
+    for name, mask in (("inferior esquerdo", (X < 0.5) & (Y < 0.5)), ("inferior direito", (X > 0.5) & (Y < 0.5))):
+        f = np.where(mask, res.psi, -np.inf)
+        j, i = np.unravel_index(np.argmax(f), f.shape)
+        out[name] = (
+            {"psi": float(res.psi[j, i]), "omega": float(res.omega[j, i]), "x": float(res.x[i]), "y": float(res.y[j])}
+            if res.psi[j, i] > 0
+            else None
+        )
+    return out
+
+
 def dt_label(sigma, latex=False):
     """Δt como fração de h² (ex.: 'h²/2', '0.25 h²')."""
     h2 = "h^2" if latex else "h²"
@@ -1237,6 +1252,134 @@ def plot_re1000(results, folder=FIGS_DIR):
     return path
 
 
+MESH_RAMP = ["#86b6ef", "#3987e5", "#1c5cab", "#0d366b"]  # rampa ordinal (malha grossa -> fina)
+
+
+def plot_mesh_study(results, folder=FIGS_DIR, Re=1000.0):
+    """Perfil u(0.5, y) para várias malhas (mesmo Re), comparado com Ghia et al."""
+    plt = _mpl()
+    os.makedirs(folder, exist_ok=True)
+    rows = sorted((r for r in results.values() if np.isclose(r.Re, Re)), key=lambda r: r.N)
+    if not rows:
+        return None
+    fig, ax = plt.subplots(figsize=(6.0, 5.2))
+    for k, r in enumerate(rows):
+        u, _ = velocities(r.psi, r.h)
+        ax.plot(
+            center_line(u, r.x, axis=1), r.y, color=MESH_RAMP[min(k, len(MESH_RAMP) - 1)], lw=1.5,
+            label=f"ADI {r.N}×{r.N} (Δt = {dt_label(r.sigma)})",
+        )
+    prof = ghia_profiles(rows[-1])
+    if prof["u_ghia"] is not None:
+        ax.plot(prof["u_ghia"], prof["y"], "o", ms=5, color=SERIES[1], mec="white", mew=0.8, label="Ghia et al. (1982)")
+    ax.set_xlabel("u (x = 0.5)")
+    ax.set_ylabel("y")
+    ax.set_title(f"Re = {Re:g}: influência da malha")
+    ax.grid(True)
+    ax.set_axisbelow(True)
+    ax.legend(loc="upper left", fontsize=8.5)
+    fig.tight_layout()
+    path = os.path.join(folder, "q2_malha_perfil_u.png")
+    fig.savefig(path, dpi=150)
+    plt.close(fig)
+    return path
+
+
+def plot_field_panels(results, folder=FIGS_DIR):
+    """Uma figura por Re e por campo (q2_psi_re<Re>.png, q2_omega_re<Re>.png), para subfiguras no relatório."""
+    plt = _mpl()
+    os.makedirs(folder, exist_ok=True)
+    paths = []
+    for r in results.values():
+        for name, levels, zero in (("psi", PSI_LEVELS, False), ("omega", OMEGA_LEVELS, True)):
+            fig, ax = plt.subplots(figsize=(3.6, 3.6))
+            _contour_panel(ax, r.x, r.y, getattr(r, name), levels, zero_line=zero)
+            ax.set_xlabel("x")
+            ax.set_ylabel("y")
+            fig.tight_layout()
+            path = os.path.join(folder, f"q2_{name}_re{r.Re:g}.png")
+            fig.savefig(path, dpi=200)
+            plt.close(fig)
+            paths.append(path)
+    return paths
+
+
+def plot_re1000_fields(res, folder=FIGS_DIR):
+    """Campos detalhados de ψ e ω (q2_re1000_psi.png e q2_re1000_omega.png), com os centros dos vórtices."""
+    plt = _mpl()
+    from matplotlib.lines import Line2D
+
+    os.makedirs(folder, exist_ok=True)
+    pv = primary_vortex(res)
+    sv = [v for v in secondary_vortices(res).values() if v is not None]
+    paths = []
+    for name, levels, zero in (("psi", PSI_LEVELS, False), ("omega", OMEGA_LEVELS, True)):
+        fig, ax = plt.subplots(figsize=(5.4, 5.4))
+        _contour_panel(ax, res.x, res.y, getattr(res, name), levels, zero_line=zero)
+        ax.plot(pv["x"], pv["y"], "x", color=INK, ms=7, mew=1.5)
+        for v in sv:
+            ax.plot(v["x"], v["y"], "x", color=INK, ms=6, mew=1.2)
+        ax.set_xlabel("x")
+        ax.set_ylabel("y")
+        ax.set_xticks(np.linspace(0, 1, 6))
+        ax.set_yticks(np.linspace(0, 1, 6))
+        if name == "psi":
+            handles = [
+                Line2D([], [], color=NEG_C, lw=1.5, label="ψ < 0"),
+                Line2D([], [], color=POS_C, lw=1.5, label="ψ > 0"),
+                Line2D([], [], color=INK, marker="x", ls="none", label="centros dos vórtices"),
+            ]
+        else:
+            handles = [
+                Line2D([], [], color=NEG_C, lw=1.5, label="ω < 0"),
+                Line2D([], [], color=ZERO_C, lw=1.5, label="ω = 0"),
+                Line2D([], [], color=POS_C, lw=1.5, label="ω > 0"),
+            ]
+        ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.11), ncol=3, fontsize=8)
+        ax.set_title(f"Re = {res.Re:g}, malha {res.N}×{res.N}", fontsize=9.5)
+        fig.tight_layout()
+        path = os.path.join(folder, f"q2_re{res.Re:g}_{name}.png")
+        fig.savefig(path, dpi=200)
+        plt.close(fig)
+        paths.append(path)
+    return paths
+
+
+def plot_evolution(res, times=(0.001, 0.005, 0.015, 0.04, 0.1, None), folder=FIGS_DIR):
+    """Instantâneos de ω em alguns pseudo-tempos t (None = estado final), a partir dos quadros salvos."""
+    plt = _mpl()
+    fr = res.frames
+    if fr is None or len(fr["iteracao"]) == 0:
+        return None, []
+    os.makedirs(folder, exist_ok=True)
+    stride = max(1, res.N // 128)
+    x, y = res.x[::stride], res.y[::stride]
+    t_frames = fr["iteracao"] * res.dt
+    chosen = []
+    for t in times:
+        k = len(t_frames) - 1 if t is None else int(np.argmin(np.abs(t_frames - t)))
+        chosen.append(k)
+    ncol = 3
+    nrow = int(np.ceil(len(chosen) / ncol))
+    fig, axs = plt.subplots(nrow, ncol, figsize=(10.5, 3.6 * nrow))
+    axs = np.atleast_1d(axs).ravel()
+    for ax, k in zip(axs, chosen):
+        _contour_panel(ax, x, y, fr["omega"][k], OMEGA_LEVELS, zero_line=True)
+        it = int(fr["iteracao"][k])
+        final = k == len(t_frames) - 1
+        ax.set_title(
+            f"{'estado final: ' if final else ''}t = {t_frames[k]:.4f} (n = {it})", fontsize=9
+        )
+    for ax in axs[len(chosen):]:
+        ax.axis("off")
+    fig.suptitle(f"Vorticidade ω, Re = {res.Re:g}, malha {res.N}×{res.N}, Δt = {dt_label(res.sigma)}", color=INK)
+    fig.tight_layout()
+    path = os.path.join(folder, f"q2_re{res.Re:g}_evolucao.png")
+    fig.savefig(path, dpi=150)
+    plt.close(fig)
+    return path, [(float(t_frames[k]), int(fr["iteracao"][k])) for k in chosen]
+
+
 def animate_case(res, folder=ANIM_DIR, fps=12, gif=True, mp4=True):
     """Animação da evolução (pseudo-temporal) de ψ e ω a partir dos quadros salvos."""
     plt = _mpl()
@@ -1307,13 +1450,21 @@ def postprocess(animations=True):
         write_profile_tables(ghia)
         plot_profiles(ghia)
         plot_contours(ghia)
+        plot_field_panels(ghia)
         plot_residuals(ghia)
     if re1000:
         print_parameters_table(re1000, "Item b — simulações para Re = 1000")
         print_re1000_table(re1000)
         write_re1000_table(re1000)
         plot_re1000(re1000)
+        plot_mesh_study(re1000)
         plot_residuals(re1000, name="q2b_residuos.png")
+        finest = max(re1000, key=lambda c: c.N)
+        detailed = load_result(result_path(finest), with_frames=True)
+        plot_re1000_fields(detailed)
+        _, instants = plot_evolution(detailed)
+        print(f"Re = 1000 ({finest.N}x{finest.N}): vórtices secundários {secondary_vortices(detailed)}")
+        print("instantâneos da evolução (t, n):", instants)
     if allres:
         write_parameters_table(allres)
     if animations:
