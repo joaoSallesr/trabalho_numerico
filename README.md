@@ -1,4 +1,4 @@
-# Trabalho Numérico — DCC190 (UFJF)
+# Trabalho Numérico — DCC189
 
 Solução numérica de equações de convecção-difusão e do problema da cavidade
 (*lid-driven cavity*) pelo método ADI (Peaceman–Rachford) com diferenças centrais.
