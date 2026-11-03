@@ -7,3 +7,5 @@ Re,malha,h,dt,dt/h^2,iteracoes,t_final,criterio_parada,tolerancia,res_psi,res_om
 1000,256x256,0.00390625,1.525879e-05,1,56566,0.863129,"max(||R_psi||_inf, ||R_omega||_inf) <= tol (residuos estacionarios, slide 22)",1e-06,9.997e-07,2.654e-07,convergiu,1026.2
 3200,128x128,0.0078125,1.525879e-05,0.25,62132,0.948059,"max(||R_psi||_inf, ||R_omega||_inf) <= tol (residuos estacionarios, slide 22)",1e-06,9.999e-07,1.620e-07,convergiu,219.8
 5000,256x256,0.00390625,7.629395e-06,0.5,100759,0.768730,"max(||R_psi||_inf, ||R_omega||_inf) <= tol (residuos estacionarios, slide 22)",0.0001,9.999e-05,2.043e-05,convergiu,1601.2
+7500,256x256,0.00390625,3.814697e-06,0.25,225906,0.861763,"max(||R_psi||_inf, ||R_omega||_inf) <= tol (residuos estacionarios, slide 22)",0.0001,9.999e-05,1.583e-05,convergiu,3000.8
+10000,256x256,0.00390625,1.525879e-06,0.1,610567,0.931651,"max(||R_psi||_inf, ||R_omega||_inf) <= tol (residuos estacionarios, slide 22)",0.0001,1.000e-04,1.258e-05,convergiu,7189.2
