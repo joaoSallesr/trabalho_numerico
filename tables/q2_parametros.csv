@@ -1,0 +1,7 @@
+Re,malha,h,dt,dt/h^2,iteracoes,t_final,criterio_parada,tolerancia,res_psi,res_omega,status,tempo_cpu_s
+100,128x128,0.0078125,6.103516e-05,1,10680,0.651855,"max(||R_psi||_inf, ||R_omega||_inf) <= tol (residuos estacionarios, slide 22)",1e-06,9.983e-07,4.660e-07,convergiu,37.0
+400,128x128,0.0078125,6.103516e-05,1,13500,0.823975,"max(||R_psi||_inf, ||R_omega||_inf) <= tol (residuos estacionarios, slide 22)",1e-06,9.997e-07,1.990e-07,convergiu,43.7
+1000,32x32,0.03125,9.765625e-05,0.1,19695,1.923340,"max(||R_psi||_inf, ||R_omega||_inf) <= tol (residuos estacionarios, slide 22)",1e-06,9.995e-07,9.902e-08,convergiu,7.8
+1000,64x64,0.015625,1.220703e-04,0.5,7452,0.909668,"max(||R_psi||_inf, ||R_omega||_inf) <= tol (residuos estacionarios, slide 22)",1e-06,9.979e-07,1.511e-07,convergiu,6.0
+1000,128x128,0.0078125,6.103516e-05,1,14295,0.872498,"max(||R_psi||_inf, ||R_omega||_inf) <= tol (residuos estacionarios, slide 22)",1e-06,9.990e-07,2.298e-07,convergiu,49.3
+3200,128x128,0.0078125,1.525879e-05,0.25,62132,0.948059,"max(||R_psi||_inf, ||R_omega||_inf) <= tol (residuos estacionarios, slide 22)",1e-06,9.999e-07,1.620e-07,convergiu,219.8

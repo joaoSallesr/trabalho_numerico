@@ -1,0 +1,16 @@
+{
+  "Re": 1000.0,
+  "N": 128,
+  "malha": "128x128",
+  "h": 0.0078125,
+  "dt": 6.103515625e-05,
+  "dt/h^2": 1.0,
+  "tolerancia": 1e-06,
+  "criterio_parada": "max(||R_psi||_inf, ||R_omega||_inf) <= tol (residuos estacionarios, slide 22)",
+  "iteracoes": 14295,
+  "status": "convergiu",
+  "res_psi": 9.989581968294914e-07,
+  "res_omega": 2.2984547232152153e-07,
+  "t_final": 0.87249755859375,
+  "tempo_cpu_s": 49.25478065000061
+}

@@ -1,5 +1,10 @@
 import numpy as np
 
+# Número do ponto na malha 129 x 129 de Ghia et al. (coordenada exata = (ponto - 1) / 128),
+# na mesma ordem de GHIA_Y e GHIA_X
+GHIA_PONTOS_Y = np.array([129, 126, 125, 124, 123, 110, 95, 80, 65, 59, 37, 23, 14, 10, 9, 8, 1])
+GHIA_PONTOS_X = np.array([129, 125, 124, 123, 122, 117, 111, 104, 65, 31, 30, 21, 13, 11, 10, 9, 1])
+
 # Coordenadas y ao longo da linha vertical central (x = 0.5)
 GHIA_Y = np.array(
     [
@@ -161,7 +166,7 @@ GHIA_U = {
             0.34635,
             0.20673,
             0.08344,
-            0.03111,
+            -0.03111,  # impresso como +0.03111 em Ghia et al. (erro de sinal; centro do vórtice em y ~ 0.533)
             -0.07540,
             -0.23186,
             -0.32709,
@@ -227,7 +232,7 @@ GHIA_V = {
             -0.15663,
             -0.19254,
             -0.22847,
-            -0.23827,
+            -0.23827,  # valor suspeito (provável erro de impressão): vizinhos indicam ~ -0.38
             -0.44993,
             -0.38598,
             0.05186,

@@ -1,0 +1,19 @@
+% Gerado por src/question2.py — requer \usepackage{booktabs} e \usepackage{graphicx}
+\begin{table}[htbp]
+\centering
+\caption{Dados das simulações da cavidade. Critério de parada: $\max(\|R_\psi^{n+1}\|_\infty, \|R_\omega^{n+1}\|_\infty) \le \mathrm{tol}$, com os resíduos estacionários do slide 22 calculados nos pontos interiores; condição inicial $\psi = \omega = 0$; $t_{\mathrm{final}} = n\,\Delta t$ é o pseudo-tempo ao final das $n$ iterações.}
+\label{tab:q2_parametros}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{rclcrrrcccl}
+\toprule
+$Re$ & Malha & $h$ & \multicolumn{2}{c}{$\Delta t$} & Iterações & $t_{\mathrm{final}}$ & tol & $\|R_\psi\|_\infty$ & $\|R_\omega\|_\infty$ & Situação \\
+\midrule
+100 & $128\times128$ & $1/128$ & $h^2$ & $6.104\times 10^{-5}$ & 10680 & 0.6519 & $10^{-6}$ & $1.0\times 10^{-6}$ & $4.7\times 10^{-7}$ & convergiu \\
+400 & $128\times128$ & $1/128$ & $h^2$ & $6.104\times 10^{-5}$ & 13500 & 0.8240 & $10^{-6}$ & $1.0\times 10^{-6}$ & $2.0\times 10^{-7}$ & convergiu \\
+1000 & $32\times32$ & $1/32$ & $h^2/10$ & $9.766\times 10^{-5}$ & 19695 & 1.9233 & $10^{-6}$ & $1.0\times 10^{-6}$ & $9.9\times 10^{-8}$ & convergiu \\
+1000 & $64\times64$ & $1/64$ & $h^2/2$ & $1.221\times 10^{-4}$ & 7452 & 0.9097 & $10^{-6}$ & $1.0\times 10^{-6}$ & $1.5\times 10^{-7}$ & convergiu \\
+1000 & $128\times128$ & $1/128$ & $h^2$ & $6.104\times 10^{-5}$ & 14295 & 0.8725 & $10^{-6}$ & $1.0\times 10^{-6}$ & $2.3\times 10^{-7}$ & convergiu \\
+3200 & $128\times128$ & $1/128$ & $h^2/4$ & $1.526\times 10^{-5}$ & 62132 & 0.9481 & $10^{-6}$ & $1.0\times 10^{-6}$ & $1.6\times 10^{-7}$ & convergiu \\
+\bottomrule
+\end{tabular}}
+\end{table}

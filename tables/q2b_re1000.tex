@@ -1,0 +1,23 @@
+% Gerado por src/question2.py — requer \usepackage{booktabs}
+\begin{table}[htbp]
+\centering
+\caption{Vórtice primário para $Re = 1000$: maior valor absoluto de $\psi$ nos nós da malha, vorticidade no mesmo ponto e sua localização. Valores em módulo (com $u = \partial\psi/\partial y$ e a tampa movendo-se em $+x$, $\psi$ e $\omega$ são negativos no centro do vórtice).}
+\label{tab:q2b_re1000}
+\footnotesize
+\begin{tabular}{lcrcccccc}
+\toprule
+Malha & $\Delta t$ & Iterações & $|\psi|_{\max}$ & $|\psi|_{\max}$ (slide 23) & $|\omega|$ & $|\omega|$ (slide 23) & $x$ & $y$ \\
+\midrule
+$32\times32$ & $h^2/10$ & 19695 & 0.069855 & 0.069855 & 1.502680 & 1.502680 & 0.5625 & 0.6250 \\
+$64\times64$ & $h^2/2$ & 7452 & 0.105220 & 0.105220 & 1.874322 & 1.874321 & 0.5313 & 0.5781 \\
+$128\times128$ & $h^2$ & 14295 & 0.115466 & 0.115466 & 2.018654 & 2.018654 & 0.5313 & 0.5703 \\
+$256\times256$ & $h^2$ & 56566 & 0.118074 & 0.118074 & 2.055531 & 2.055531 & 0.5313 & 0.5664 \\
+\midrule
+\multicolumn{9}{l}{\emph{Referências (tabela do slide 24)}} \\
+\multicolumn{3}{l}{Ghia et al. (1982) [129x129]} & 0.117929 & & 2.04968 & & 0.5313 & 0.5625 \\
+\multicolumn{3}{l}{Botella \& Peyret [N=160]} & 0.1189366 & & 2.067753 & & 0.5308 & 0.5652 \\
+\multicolumn{3}{l}{Schreiber \& Keller [141x141]} & 0.11603 & & 2.0268 & & 0.52857 & 0.56429 \\
+\multicolumn{3}{l}{Bruneau \& Jouron [256x256]} & 0.1163 & & --- & & 0.5313 & 0.5586 \\
+\bottomrule
+\end{tabular}
+\end{table}
