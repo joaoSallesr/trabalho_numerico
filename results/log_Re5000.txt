@@ -1,0 +1,7 @@
+[início] Re=5000 malha 256x256 Δt=0.5 h² tol=0.0001
+  Re=5000 N=256 it=20000 t=0.1526 R_psi=5.54e-01 R_omega=6.98e-02 (403 s)
+  Re=5000 N=256 it=40000 t=0.3052 R_psi=2.34e-01 R_omega=2.14e-02 (741 s)
+  Re=5000 N=256 it=60000 t=0.4578 R_psi=1.34e-01 R_omega=2.43e-02 (1035 s)
+  Re=5000 N=256 it=80000 t=0.6104 R_psi=4.22e-03 R_omega=7.52e-04 (1310 s)
+  Re=5000 N=256 it=100000 t=0.7629 R_psi=1.25e-04 R_omega=2.17e-05 (1588 s)
+[fim] Re=5000 malha 256x256: convergiu em 100759 iterações (R_psi=1.00e-04, R_omega=2.04e-05, 26.7 min)

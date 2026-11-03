@@ -1,0 +1,19 @@
+[início] Re=100 malha 128x128 Δt=1 h²
+[fim] Re=100 malha 128x128: convergiu em 10680 iterações (R_psi=9.98e-07, R_omega=4.66e-07, 0.6 min)
+[início] Re=400 malha 128x128 Δt=1 h²
+[fim] Re=400 malha 128x128: convergiu em 13500 iterações (R_psi=1.00e-06, R_omega=1.99e-07, 0.7 min)
+[início] Re=1000 malha 128x128 Δt=1 h²
+[fim] Re=1000 malha 128x128: convergiu em 14295 iterações (R_psi=9.99e-07, R_omega=2.30e-07, 0.8 min)
+[início] Re=1000 malha 32x32 Δt=0.1 h²
+[fim] Re=1000 malha 32x32: convergiu em 19695 iterações (R_psi=9.99e-07, R_omega=9.90e-08, 0.1 min)
+[início] Re=1000 malha 64x64 Δt=0.5 h²
+[fim] Re=1000 malha 64x64: convergiu em 7452 iterações (R_psi=9.98e-07, R_omega=1.51e-07, 0.1 min)
+[início] Re=3200 malha 128x128 Δt=0.25 h²
+  Re=3200 N=128 it=20000 t=0.3052 R_psi=3.01e-01 R_omega=2.77e-02 (70 s)
+  Re=3200 N=128 it=40000 t=0.6104 R_psi=1.00e-03 R_omega=1.36e-04 (140 s)
+  Re=3200 N=128 it=60000 t=0.9155 R_psi=1.44e-06 R_omega=2.91e-07 (211 s)
+[fim] Re=3200 malha 128x128: convergiu em 62132 iterações (R_psi=1.00e-06, R_omega=1.62e-07, 3.7 min)
+[início] Re=1000 malha 256x256 Δt=1 h²
+  Re=1000 N=256 it=20000 t=0.3052 R_psi=3.96e-02 R_omega=9.98e-03 (332 s)
+  Re=1000 N=256 it=40000 t=0.6104 R_psi=1.27e-04 R_omega=2.54e-05 (749 s)
+[fim] Re=1000 malha 256x256: convergiu em 56566 iterações (R_psi=1.00e-06, R_omega=2.65e-07, 17.1 min)

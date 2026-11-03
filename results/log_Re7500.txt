@@ -1,0 +1,13 @@
+[início] Re=7500 malha 256x256 Δt=0.25 h² tol=0.0001
+  Re=7500 N=256 it=20000 t=0.0763 R_psi=1.77e+00 R_omega=2.26e-01 (406 s)
+  Re=7500 N=256 it=40000 t=0.1526 R_psi=5.85e-01 R_omega=6.95e-02 (743 s)
+  Re=7500 N=256 it=60000 t=0.2289 R_psi=2.68e-01 R_omega=2.86e-02 (1038 s)
+  Re=7500 N=256 it=80000 t=0.3052 R_psi=1.08e+00 R_omega=3.16e-01 (1311 s)
+  Re=7500 N=256 it=100000 t=0.3815 R_psi=1.05e+00 R_omega=4.91e-01 (1581 s)
+  Re=7500 N=256 it=120000 t=0.4578 R_psi=2.49e-01 R_omega=2.26e-02 (1814 s)
+  Re=7500 N=256 it=140000 t=0.5341 R_psi=1.86e-01 R_omega=3.34e-02 (2039 s)
+  Re=7500 N=256 it=160000 t=0.6104 R_psi=3.83e-02 R_omega=4.95e-03 (2246 s)
+  Re=7500 N=256 it=180000 t=0.6866 R_psi=5.36e-03 R_omega=7.59e-04 (2453 s)
+  Re=7500 N=256 it=200000 t=0.7629 R_psi=1.09e-03 R_omega=1.44e-04 (2676 s)
+  Re=7500 N=256 it=220000 t=0.8392 R_psi=1.95e-04 R_omega=2.01e-05 (2910 s)
+[fim] Re=7500 malha 256x256: convergiu em 225906 iterações (R_psi=1.00e-04, R_omega=1.58e-05, 50.0 min)
